@@ -12,21 +12,20 @@ print(df.describe())
 df = df[(df['Avg Lap Sec'] > 60) & (df['Avg Lap Sec'] < 150)]
 df = df.dropna(subset=['Best Lap Sec'])
 df = df[(df['Best Lap Sec'] > 55) & (df['Best Lap Sec'] < 150)]
-print(df.shape)
 
 race_summary = df.groupby(['Race Year', 'Race Id', 'Race Name']).agg(
-    Avg_Lap_Sec  = ('Avg Lap Sec',  'mean'),
+    Avg_Lap_Sec  = ('Avg Lap Sec', 'mean'),
     Best_Lap_Sec = ('Best Lap Sec', 'min'),
-    Total_Laps   = ('Laps',         'sum'),
-    Pit_Laps     = ('Pit Laps',     'sum'),
-    Avg_Pit_Pct  = ('Pit Pct',      'mean')
+    Total_Laps   = ('Laps', 'sum'),
+    Pit_Laps     = ('Pit Laps', 'sum'),
+    Avg_Pit_Pct  = ('Pit Pct', 'mean')
 ).reset_index()
 
 driver_summary = df.groupby(['Driver Id', 'Race Year']).agg(
-    Avg_Lap_Sec  = ('Avg Lap Sec',  'mean'),
+    Avg_Lap_Sec  = ('Avg Lap Sec', 'mean'),
     Best_Lap_Sec = ('Best Lap Sec', 'min'),
-    Total_Laps   = ('Laps',         'sum'),
-    Avg_Pit_Pct  = ('Pit Pct',      'mean')
+    Total_Laps   = ('Laps', 'sum'),
+    Avg_Pit_Pct  = ('Pit Pct', 'mean')
 ).reset_index()
 
 sns.set_style('darkgrid')
@@ -67,12 +66,7 @@ plt.tight_layout()
 plt.savefig('heatmap.png', dpi=150)
 plt.show()
 
-top_drivers = (
-    driver_summary.groupby('Driver Id')['Avg_Lap_Sec']
-    .mean()
-    .sort_values()
-    .head(15)
-)
+top_drivers = driver_summary.groupby('Driver Id')['Avg_Lap_Sec'].mean().sort_values().head(15)
 plt.figure(figsize=(10, 6))
 top_drivers.plot(kind='barh', color='steelblue')
 plt.title('Top 15 Drivers by Avg Lap Time')
@@ -93,7 +87,7 @@ plt.show()
 
 best_lap = race_summary.groupby('Race Year')['Best_Lap_Sec'].mean()
 plt.figure(figsize=(12, 5))
-plt.scatter(best_lap.index, best_lap.values, color='red', s=80, zorder=5)
+plt.scatter(best_lap.index, best_lap.values, color='red', s=80)
 plt.title('Best Lap Per Season')
 plt.xlabel('Season')
 plt.ylabel('Best Lap (s)')
